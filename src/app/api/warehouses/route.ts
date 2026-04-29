@@ -27,3 +27,13 @@ export async function POST(request: Request) {
       return Response.json({ message: 'Failed to s the warehouse' }, {status: 500})
    }
 }
+
+export async function GET() {
+   try {
+      const alWarehouses = await db.select().from(warehouses)
+      return Response.json(alWarehouses)
+
+   } catch (error) {
+      return Response.json({ message: 'Failed to fetch all warehouses'}, {status: 500});
+   }
+}
