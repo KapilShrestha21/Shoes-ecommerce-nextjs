@@ -1,5 +1,5 @@
 import { sql } from "drizzle-orm";
-import { pgTable, integer, serial, varchar, text, timestamp } from "drizzle-orm/pg-core";
+import { pgTable, integer, serial, varchar, text, timestamp, index } from "drizzle-orm/pg-core";
 
 export const users = pgTable("users", {
     id: serial("id").primaryKey(),
@@ -23,3 +23,17 @@ export const products = pgTable("products", {
     updatedAt: timestamp("updated_at").default(sql`CURRENT_TIMESTAMP`),
     createdAt: timestamp("created_at").default(sql`CURRENT_TIMESTAMP`),
 })
+
+export const warehouses = pgTable("warehouses", {
+    id: serial("id").primaryKey(),
+    name: varchar("name", { length: 100 }).notNull(),
+    pincode: varchar("pincode", { length: 6 }).notNull(),
+    updatedAt: timestamp("updated_at").default(sql`CURRENT_TIMESTAMP`),
+    createdAt: timestamp("created_at").default(sql`CURRENT_TIMESTAMP`),
+},
+    (table) => { // using b+ tree algorithm - dsa
+        return {
+            pincodeIdx: index('pincode_idx').on(table.pincode),
+        }
+    }
+)

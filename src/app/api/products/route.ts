@@ -64,10 +64,14 @@ export async function POST(request: Request) {
 export async function GET() {
 
     try {
-        const allProducts = await db.select().from(products).orderBy(desc(products.id));
+        const allProducts = await db
+        .select()
+        .from(products)
+        .orderBy(desc(products.id));
         return Response.json(allProducts)
     } catch (error) {
         return Response.json({ message: 'Failed to fetch products' }, { status: 500 })
 
     }
 }
+
