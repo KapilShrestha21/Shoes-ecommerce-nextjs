@@ -29,6 +29,20 @@
       "when": 1777367823011,
       "tag": "0003_oval_vance_astro",
       "breakpoints": true
+    },
+    {
+      "idx": 4,
+      "version": "7",
+      "when": 1777445917517,
+      "tag": "0004_square_felicia_hardy",
+      "breakpoints": true
+    },
+    {
+      "idx": 5,
+      "version": "7",
+      "when": 1777516108875,
+      "tag": "0005_wild_overlord",
+      "breakpoints": true
     }
   ]
 }
