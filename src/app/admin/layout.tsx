@@ -1,8 +1,8 @@
 'use client'
 import { AppSidebar } from "@/app/admin/_components/sidebar"
-import { ChartAreaInteractive } from "@/components/chart-area-interactive"
-import { DataTable } from "@/components/data-table"
-import { SectionCards } from "@/components/section-cards"
+// import { ChartAreaInteractive } from "@/components/chart-area-interactive"
+// import { DataTable } from "@/components/data-table"
+// import { SectionCards } from "@/components/section-cards"
 import {
   SidebarInset,
   SidebarProvider,
@@ -21,9 +21,8 @@ import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
 import { Button } from "@/components/ui/button"
 import { signOut } from "next-auth/react" // or your auth provider
 
-import data from "./data.json"
 
-export default function DashboardLayout() {
+export default function DashboardLayout({children} : {children: React.ReactNode}) {
   return (
     <TooltipProvider>
       <SidebarProvider
@@ -76,13 +75,14 @@ export default function DashboardLayout() {
           <main className="flex flex-1 flex-col overflow-x-hidden">
             <div className="@container/main flex flex-1 flex-col gap-2">
               <div className="flex flex-col gap-4 py-4 md:gap-6 md:py-6">
-                <SectionCards />
+                {children}
+                {/* <SectionCards /> */}
                 <div className="px-4 lg:px-6">
-                  <ChartAreaInteractive />
+                  {/* <ChartAreaInteractive /> */}
                 </div>
                 {/* Ensure DataTable is responsive internally */}
                 <div className="px-4 lg:px-6 overflow-auto">
-                   <DataTable data={data} />
+                   {/* <DataTable data={data} /> */}
                 </div>
               </div>
             </div>

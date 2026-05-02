@@ -1,10 +1,10 @@
-import { db } from "@/src/lib/db/db";
-import { products } from "@/src/lib/db/schema";
-import { productSchema } from "@/src/lib/validators/productSchema";
+import { products } from "@/lib/db/schema";
+import { productSchema } from "@/lib/validators/productSchema";
 import { writeFile } from "node:fs/promises";
 import path from "node:path";
 import fs from "fs/promises";
 import { desc } from "drizzle-orm";
+import { db } from "@/lib/db/db";
 
 export async function POST(request: Request) {
     // todo: check user access
