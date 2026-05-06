@@ -1,6 +1,6 @@
-import { db } from "@/src/lib/db/db";
-import { deliveryPersons, warehouses } from "@/src/lib/db/schema";
-import { deliveryPersonSchema } from "@/src/lib/validators/deliveryPersonSchema";
+import { db } from "@/lib/db/db";
+import { deliveryPersons, warehouses } from "@/lib/db/schema";
+import { deliveryPersonSchema } from "@/lib/validators/deliveryPersonSchema";
 import { desc, eq } from "drizzle-orm";
 
 export async function POST(request: Request) {

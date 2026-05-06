@@ -1,6 +1,6 @@
-import { db } from "@/src/lib/db/db";
-import { inventories, products, warehouses } from "@/src/lib/db/schema";
-import { inventorySchema } from "@/src/lib/validators/inventorySchema";
+import { db } from "@/lib/db/db";
+import { inventories, products, warehouses } from "@/lib/db/schema";
+import { inventorySchema } from "@/lib/validators/inventorySchema";
 import { desc, eq } from "drizzle-orm";
 
 export async function POST(request: Request) {

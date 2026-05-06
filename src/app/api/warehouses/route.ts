@@ -1,6 +1,6 @@
-import { db } from "@/src/lib/db/db";
-import { warehouses } from "@/src/lib/db/schema";
-import { warehouseSchema } from "@/src/lib/validators/warehouseSchema";
+import { db } from "@/lib/db/db";
+import { warehouses } from "@/lib/db/schema";
+import { warehouseSchema } from "@/lib/validators/warehouseSchema";
 
 export async function POST(request: Request) {
 
