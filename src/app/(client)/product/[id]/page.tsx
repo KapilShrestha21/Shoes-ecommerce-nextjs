@@ -3,7 +3,7 @@
 import { getSingleProduct } from '@/http/api';
 import { useQuery } from '@tanstack/react-query';
 import Image from 'next/image';
-import { useParams } from 'next/navigation'
+import { useParams, usePathname } from 'next/navigation'
 import React from 'react'
 import Header from '../../_components/header';
 import { Star } from 'lucide-react';
@@ -18,11 +18,18 @@ import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from '
 import { Textarea } from '@/components/ui/textarea';
 import { Input } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
+import { useSession } from 'next-auth/react';
+import Link from 'next/link';
 
 const SingleProduct = () => {
 
     const params = useParams();
+    const pathname = usePathname()    
     const id = params.id;
+
+    const { data: session} = useSession();
+    console.log('session', session);
+    
 
     const form = useForm<z.infer<typeof orderSchema>>({
         resolver: zodResolver(orderSchema),
@@ -181,7 +188,14 @@ const SingleProduct = () => {
                                         <Separator className="my-6 bg-brown-900" />
                                             <div className='flex items-center justify-between'>
                                                 <span className="text-3xl font-semibold">wef  </span>
-                                                <Button type='submit'>Buy Now</Button>
+
+                                                {session ? (
+                                                    <Button type='submit'>Buy Now</Button>
+                                                ) : (
+                                                    <Link href={`/api/auth/signin?callbackUrl=${pathname}`}>
+                                                        <Button >Buy Now</Button>
+                                                    </Link>
+                                                )}
                                             </div>    
                                     </form>
                                 </Form>
