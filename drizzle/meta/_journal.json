@@ -43,6 +43,13 @@
       "when": 1777516108875,
       "tag": "0005_wild_overlord",
       "breakpoints": true
+    },
+    {
+      "idx": 6,
+      "version": "7",
+      "when": 1779101392508,
+      "tag": "0006_violet_sunfire",
+      "breakpoints": true
     }
   ]
 }

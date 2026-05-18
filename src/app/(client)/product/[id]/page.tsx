@@ -48,8 +48,17 @@ const SingleProduct = () => {
 
     type FormValues = z.infer<typeof orderSchema>
     const onSubmit = (values: FormValues) => {
-
+        // xaa aajai
     }
+
+    const qty = form.watch("qty")
+
+    const price = React.useMemo(() => {
+        if (product?.price) {
+            return product.price * qty;
+        }
+        return 0;
+    },[qty, product])
 
     return (
         <>
@@ -62,7 +71,7 @@ const SingleProduct = () => {
                                 <Skeleton className='aspect-square w-[28rem] bg-brown-100' />
                             ) : (
                                 <Image
-                                    src={`/assets/${product?.image}` ?? '/product1.jpg'}
+                                    src={`/assets/${product?.image ?? '/product1.jpg'}`}
                                     alt={product?.name ?? 'image'}
                                     width={0}
                                     height={0}
@@ -187,7 +196,7 @@ const SingleProduct = () => {
 
                                         <Separator className="my-6 bg-brown-900" />
                                             <div className='flex items-center justify-between'>
-                                                <span className="text-3xl font-semibold">wef  </span>
+                                                <span className="text-3xl font-semibold">${price} </span>
 
                                                 {session ? (
                                                     <Button type='submit'>Buy Now</Button>
