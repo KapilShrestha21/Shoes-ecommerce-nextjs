@@ -2,6 +2,7 @@ import { db } from "@/lib/db/db";
 import { inventories, products, warehouses } from "@/lib/db/schema";
 import { inventorySchema } from "@/lib/validators/inventorySchema";
 import { desc, eq } from "drizzle-orm";
+import postgres from "postgres";
 
 export async function POST(request: Request) {
     const requestData = await request.json()
@@ -17,12 +18,21 @@ export async function POST(request: Request) {
 
 
     try {
+
         await db.insert(inventories).values(validatedData);
 
         return Response.json({ message: "Ok" }, { status: 201 })
 
     } catch (err) {
-        return Response.json({ message: "Failed to store the inventory into the database" }, { status: 400 })
+        // 23505 is the code number for PostgreSQL unique violations
+
+        if (err instanceof postgres.PostgresError) {   
+            if (err.code === '23505') {
+                return Response.json({message: "A sku with this code already exists"}, { status: 409 })
+            }
+            return Response.json({ message: "Failed to store the inventory into the database" }, { status: 500 })
+        }
+        return Response.json({ message: "Unexpected server error. Please try again later" }, { status: 500 })
     }
 }
 

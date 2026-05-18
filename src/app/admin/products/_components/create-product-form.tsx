@@ -88,8 +88,8 @@ const CreateProductForm = ({onSubmit, disabled} : {disabled: boolean, onSubmit: 
                                     type="number"
                                     {...field}
                                     onChange={(e) => {
-                                        const value = parseFloat(e.target.value);
-                                        field.onChange(value);
+                                        const value = e.target.value;
+                                        field.onChange(value === "" ? "" : parseFloat(value));
                                     }}
                                 />
                             </FormControl>

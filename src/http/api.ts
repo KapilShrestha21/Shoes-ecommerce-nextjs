@@ -1,6 +1,6 @@
 import axios from "axios";
 import { api } from "./client"
-import { Warehouse } from "@/types";
+import { Inventory, InventoryData, Warehouse } from "@/types";
 import { DeliveryPerson } from "@/types";
 
 export const getAllProducts = async () => {
@@ -35,4 +35,19 @@ export const getAllDeliveryPersons = async () => {
 export const createDeliveryPerson = async (data: DeliveryPerson) => {
     const response = await api.post("/delivery-persons", data);
     return response.data;
+}
+
+export const getAllInventories = async () => {
+    const response = await api.get("/inventories");
+    return await response.data;
+}
+
+export const createInventory = async (data: InventoryData) => {
+    const response = await api.post("/inventories", data);
+    return response.data;
+}
+
+export const getSingleProduct = async (id: string) => {
+    const response = await api.get(`/products/${id}`);
+    return await response.data;
 }
