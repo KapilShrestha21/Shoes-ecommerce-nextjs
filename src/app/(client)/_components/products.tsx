@@ -11,7 +11,9 @@ import { Skeleton } from '@/components/ui/skeleton';
 
 const Products = () => {
     const skeletons = Array.from({ length: 4 });
-    const { data: products, isLoading } = useQuery({
+    
+    // ✅ Explicitly cast useQuery to expect an array of Products
+    const { data: products, isLoading } = useQuery<Product[]>({
         queryKey: ['products'],
         queryFn: getAllProducts,
         staleTime: 10 * 1000,
@@ -40,7 +42,8 @@ const Products = () => {
                         </>
                     ) : (
                         <>
-                            {products?.map((product: Product) => {
+                            {/* ✅ Bulletproof safeguard: Only map if products is verified as a valid Array */}
+                            {Array.isArray(products) && products.map((product: Product) => {
                                 return (
                                     <div
                                         key={product.id}
