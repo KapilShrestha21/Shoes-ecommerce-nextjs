@@ -11,7 +11,7 @@ import { Skeleton } from '@/components/ui/skeleton';
 
 const Products = () => {
     const skeletons = Array.from({ length: 4 });
-    const { data: products, isLoading } = useQuery<Product[]>({
+    const { data: products, isLoading } = useQuery({
         queryKey: ['products'],
         queryFn: getAllProducts,
         staleTime: 10 * 1000,
