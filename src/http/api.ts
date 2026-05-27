@@ -1,6 +1,6 @@
 import axios from "axios";
 import { api } from "./client"
-import { Inventory, InventoryData, Warehouse } from "@/types";
+import { Inventory, InventoryData, OrderData, OrderStatusData, Warehouse } from "@/types";
 import { DeliveryPerson } from "@/types";
 
 export const getAllProducts = async () => {
@@ -51,3 +51,24 @@ export const getSingleProduct = async (id: string) => {
     const response = await api.get(`/products/${id}`);
     return await response.data;
 }
+
+export const placeOrder = async (data: OrderData) => {
+    const response = await api.post(`/orders`, data)
+    return await response.data
+}   
+
+
+export const getAllOrders = async () => {
+    const response = await api.get(`/orders`);
+    return await response.data;
+};
+
+export const changeOrderStatus = async (data: OrderStatusData) => {
+    const response = await api.patch(`/orders/status`, data);
+    return await response.data;
+};
+
+export const getMyOrders = async () => {
+    const response = await api.get(`/orders/history`);
+    return await response.data;
+};

@@ -4,11 +4,11 @@ import { cn } from '@/lib/utils';
 import { signOut, useSession } from 'next-auth/react';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
+import { LogOut, LogIn, User } from 'lucide-react';
 
 export default function Header() {
     const pathname = usePathname();
-    const session = useSession();
-    console.log('session', session);
+    const { data: session, status } = useSession();
 
     const navItems = [
         { label: 'Home', href: '/' },
@@ -18,29 +18,57 @@ export default function Header() {
     ];
 
     return (
-        <header className="">
-            <div className="flex h-10 items-center justify-center bg-brown-900 text-center text-white">
-                <span className="text-sm">
-                    Order 2 Delight Dairy Choco bars today and save ₹100 instantly!
+        <header className="w-full border-b border-zinc-900 bg-white">
+            {/* Top Announcement Bar - Premium Dark Theme */}
+            <div className="flex h-9 items-center justify-center bg-amber-600 px-4 text-center text-zinc-950 font-medium">
+                <span className="text-xs tracking-wide">
+                    Limited Run: Use code <span className="font-bold">NEXTLEVEL</span> for free express shipping on all drops today!
                 </span>
             </div>
-            <nav className="flex h-14 items-center justify-center">
-                <ul className="flex items-center justify-center gap-6">
+            
+            {/* Main Navigation */}
+            <nav className="mx-auto flex h-16 max-w-7xl items-center justify-between px-4 sm:px-6 lg:px-8">
+                {/* Brand Logo Placeholder */}
+                <div className="flex items-center">
+                    <Link href="/" className="text-xl font-black uppercase tracking-wider text-amber">
+                        Pace<span className="text-amber-500">.</span>
+                    </Link>
+                </div>
+
+                {/* Nav Links Stack */}
+                <ul className="flex items-center gap-6 sm:gap-8">
                     {navItems.map((item) => (
-                        <li
-                            key={item.href}
-                            className={cn(
-                                'text-brown-300 underline-offset-4 transition-all hover:cursor-pointer hover:text-brown-900 hover:underline',
-                                pathname === item.href && 'font-semibold text-brown-900 underline'
-                            )}>
-                            <Link href={item.href}>{item.label}</Link>
+                        <li key={item.href}>
+                            <Link 
+                                href={item.href}
+                                className={cn(
+                                    'text-sm font-medium tracking-wide text-amber-400 transition-colors duration-200 hover:text-amber-500',
+                                    pathname === item.href && 'font-bold text-amber-500'
+                                )}
+                            >
+                                {item.label}
+                            </Link>
                         </li>
                     ))}
-                    <li className="text-brown-300 underline-offset-4 transition-all hover:cursor-pointer hover:text-brown-900 hover:underline">
-                        {session.status === 'authenticated' ? (
-                            <button onClick={() => signOut()}>Logout</button>
+                    
+                    {/* Authentication CTA Link */}
+                    <li className="border-l border-zinc-800 pl-4 sm:pl-6">
+                        {status === 'authenticated' ? (
+                            <button 
+                                onClick={() => signOut()}
+                                className="flex items-center gap-1.5 text-sm font-medium text-zinc-400 transition-colors duration-200 hover:text-red-400"
+                            >
+                                <LogOut className="h-4 w-4" />
+                                <span className="cursor-pointer hidden sm:inline">Logout</span>
+                            </button>
                         ) : (
-                            <Link href="/api/auth/signin"> Sign in</Link>
+                            <Link 
+                                href="/api/auth/signin"
+                                className="flex items-center gap-1.5 text-sm font-medium text-zinc-400 transition-colors duration-200 hover:text-amber-500"
+                            >
+                                <LogIn className="h-4 w-4" />
+                                <span className="cursor-pointer hidden sm:inline">Sign In</span>
+                            </Link>
                         )}
                     </li>
                 </ul>

@@ -21,20 +21,20 @@ const Products = () => {
         <section className="bg-[#f5f5f5] px-5 py-14 md:py-20">
             <div className="mx-auto max-w-6xl">
                 <div className="flex items-center justify-center gap-5">
-                    <Separator className="!h-0.5 !w-20 bg-brown-900" />
-                    <h2 className="text-3xl font-bold tracking-tight text-brown-900">Products</h2>
-                    <Separator className="!h-0.5 !w-20 bg-brown-900" />
+                    <Separator className="!h-0.5 !w-20 bg-amber-900" />
+                    <h2 className="text-3xl font-bold tracking-tight text-amber-900">Products</h2>
+                    <Separator className="!h-0.5 !w-20 bg-amber-900" />
                 </div>
 
-                <div className="mt-20 grid grid-cols-1 gap-8 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4">
+                <div className="mt-20 grid grid-cols-2 gap-x-4 gap-y-8 sm:gap-8 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4">
                     {isLoading ? (
                         <>
                             {skeletons.map((_, i) => (
                                 <div key={i} className="flex h-full w-full flex-col gap-5">
-                                    <Skeleton className="aspect-square w-full rounded-md bg-brown-100" />
-                                    <Skeleton className="h-5 w-full rounded-md bg-brown-100" />
-                                    <Skeleton className="h-5 w-10 rounded-md bg-brown-100" />
-                                    <Skeleton className="h-8 w-full rounded-md bg-brown-100" />
+                                    <Skeleton className="aspect-square w-full rounded-md bg-amber-100" />
+                                    <Skeleton className="h-5 w-full rounded-md bg-amber-100" />
+                                    <Skeleton className="h-5 w-10 rounded-md bg-amber-100" />
+                                    <Skeleton className="h-8 w-full rounded-md bg-amber-100" />
                                 </div>
                             ))}
                         </>
@@ -56,7 +56,7 @@ const Products = () => {
                                         />
 
                                         <div className="w-full">
-                                            <p className="text-lg font-semibold text-brown-900">
+                                            <p className="text-lg font-semibold text-amber-900">
                                                 {product.name}
                                             </p>
                                             <div className="mt-1 space-x-2">
@@ -66,7 +66,7 @@ const Products = () => {
                                             <Link href={`/product/${product.id}`}>
                                                 <Button
                                                     size={'sm'}
-                                                    className="mt-5 w-full bg-brown-900 hover:bg-brown-800 active:bg-brown-700">
+                                                    className="mt-5 w-full bg-amber-900 hover:bg-amber-800 active:bg-amber-700">
                                                     Buy Now
                                                 </Button>
                                             </Link>

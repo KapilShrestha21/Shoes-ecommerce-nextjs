@@ -5,9 +5,19 @@ import path from "node:path";
 import fs from "fs/promises";
 import { desc } from "drizzle-orm";
 import { db } from "@/lib/db/db";
+import { getServerSession } from "next-auth";
+import { authOptions } from "@/lib/auth/authOptions";
 
 export async function POST(request: Request) {
-    // todo: check user access
+    const session = await getServerSession(authOptions)
+    if (!session) {
+        return Response.json({ message: 'Not allowed'}, { status: 401})
+    }
+
+    if (session.user?.role !== 'admin') {
+        return Response.json({ message: 'Not allowed'}, { status: 403} )
+    }
+
     const data = await request.formData(); // we write formData instead of json because we have to get image too..
 
     let validatedData;
@@ -19,8 +29,12 @@ export async function POST(request: Request) {
             price: Number(data.get('price')),
             image: data.get('image'),
         })
-    } catch (err) {
-        return Response.json({ message: err }, { status: 400 });
+    } catch (err: any) {
+
+        if (err.errors) {
+        return Response.json({ message: "Validation failed", errors: err.errors }, { status: 400 });
+    }
+        return Response.json({ message: err || "Invalid input data" }, { status: 400 });
     }
 
     // Date.now() - gives currrent date like 241242323

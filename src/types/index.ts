@@ -31,3 +31,38 @@ export interface InventoryData {
     warehouseId: number;
     productId: number;
 }
+
+export interface OrderData {
+    productId: number;
+    qty: number;
+    pincode: string;
+    address: string;
+}
+
+export interface Order {
+    id: number;
+    product: string;
+    user: string;
+    type: string;
+    address: string;
+    status: string;
+    price: number;
+    qty: number;
+}
+
+export interface OrderStatusData {
+    orderId: number;
+    status: string;
+}
+
+export interface MyOrder {
+    id: number;
+    image: string;
+    price: number;
+    product: string;
+    address: string;
+    productDescription: string;
+    status: string;
+    type: string;
+    createdAt: string;
+}

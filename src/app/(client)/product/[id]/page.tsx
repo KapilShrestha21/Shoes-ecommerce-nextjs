@@ -1,10 +1,10 @@
 'use client'
 
-import { getSingleProduct } from '@/http/api';
-import { useQuery } from '@tanstack/react-query';
+import { getSingleProduct, placeOrder } from '@/http/api';
+import { useMutation, useQuery } from '@tanstack/react-query';
 import Image from 'next/image';
 import { useParams, usePathname } from 'next/navigation'
-import React from 'react'
+import React, { useEffect } from 'react'
 import Header from '../../_components/header';
 import { Star } from 'lucide-react';
 import { Product } from '@/types';
@@ -20,16 +20,25 @@ import { Input } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
 import { useSession } from 'next-auth/react';
 import Link from 'next/link';
+import { AxiosError } from 'axios';
+import { toast } from 'sonner';
+
+
+type CustomError = {
+    message: string;
+};
+
+type FormValues = z.infer<typeof orderSchema>
 
 const SingleProduct = () => {
 
     const params = useParams();
-    const pathname = usePathname()    
-    const id = params.id;
+    const pathname = usePathname()
+    const id = params?.id;
 
-    const { data: session} = useSession();
-    console.log('session', session);
-    
+    const { data: session } = useSession();
+    // console.log('session', session);
+
 
     const form = useForm<z.infer<typeof orderSchema>>({
         resolver: zodResolver(orderSchema),
@@ -37,18 +46,55 @@ const SingleProduct = () => {
             address: "",
             pincode: "",
             qty: 1,
-            productId: Number(id),
+            productId: id ? Number(id) : 0,
         }
     })
+
+    // Dynamically update form value once id becomes available
+    useEffect(() => {
+        if (id && id!== 'undefined') {
+            form.setValue('productId', Number(id));
+        }
+    },[id, form])
 
     const { data: product, isLoading } = useQuery<Product>({
         queryKey: ['product', id],
         queryFn: () => getSingleProduct(id as string),
+
+        // Don't run the fetch if id doesn't exist yet
+        enabled: !!id && id !== 'undefined',
     })
 
-    type FormValues = z.infer<typeof orderSchema>
+    const { mutate, isPending } = useMutation({
+        mutationKey: ['order'],
+        mutationFn: (data: FormValues) => placeOrder({ ...data, productId: Number(id) }),
+        onSuccess: (data) => {
+            toast.success("Order placed successfully!");
+
+            // Reset the form fields back to empty/default values
+            form.reset({
+                address: "",
+                pincode: "",
+                qty: 1,
+                productId: id ? Number(id) : 0,
+            });
+            // window.location.href = data.paymentUrl;
+        },
+        onError: (err: AxiosError) => {
+            if (err.response?.data) {
+                const customErr = err.response.data as CustomError;
+                console.error(customErr.message);
+                toast.error(customErr.message);
+
+            } else {
+                console.error(err);
+                toast.error('Unknown error');
+            }
+        },
+    })
+
     const onSubmit = (values: FormValues) => {
-        // xaa aajai
+        mutate(values)
     }
 
     const qty = form.watch("qty")
@@ -58,7 +104,7 @@ const SingleProduct = () => {
             return product.price * qty;
         }
         return 0;
-    },[qty, product])
+    }, [qty, product])
 
     return (
         <>
@@ -183,7 +229,10 @@ const SingleProduct = () => {
                                                                     className="h-9 border-brown-200 bg-white placeholder:text-gray-300 focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-brown-400 focus-visible:ring-offset-0"
                                                                     placeholder="e.g. 1"
                                                                     {...field}
-                                                                //    onChange={}
+                                                                    onChange={(e) => {
+                                                                        const value = parseFloat(e.target.value);
+                                                                        field.onChange(value)
+                                                                    }}
                                                                 />
                                                             </FormControl>
                                                             <FormMessage className="text-xs" />
@@ -195,17 +244,17 @@ const SingleProduct = () => {
                                         </div>
 
                                         <Separator className="my-6 bg-brown-900" />
-                                            <div className='flex items-center justify-between'>
-                                                <span className="text-3xl font-semibold">${price} </span>
+                                        <div className='flex items-center justify-between'>
+                                            <span className="text-3xl font-semibold">${price} </span>
 
-                                                {session ? (
-                                                    <Button type='submit'>Buy Now</Button>
-                                                ) : (
-                                                    <Link href={`/api/auth/signin?callbackUrl=${pathname}`}>
-                                                        <Button >Buy Now</Button>
-                                                    </Link>
-                                                )}
-                                            </div>    
+                                            {session ? (
+                                                <Button type='submit'>Buy Now</Button>
+                                            ) : (
+                                                <Link href={`/api/auth/signin?callbackUrl=${pathname}`}>
+                                                    <Button >Buy Now</Button>
+                                                </Link>
+                                            )}
+                                        </div>
                                     </form>
                                 </Form>
                             </div>

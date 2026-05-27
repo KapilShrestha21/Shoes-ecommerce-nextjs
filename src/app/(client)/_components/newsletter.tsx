@@ -13,20 +13,22 @@ export default function NewsLetter() {
                     Get the latest news, exclusive offers, and delicious updates delivered right to
                     your inbox with our chocolate and cake shop newsletter.
                 </p>
-                <div className="relative mt-6 w-[400px]">
-                    <Input
-                        className="border-white/40 bg-white/10 placeholder:text-white focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-white/50 focus-visible:ring-offset-0"
-                        placeholder="Enter your email address"
-                    />
-                    <Button
-                        variant="secondary"
-                        className="absolute right-0 top-1/2 mr-1 h-8 -translate-y-1/2 transform bg-white text-brown-900 hover:bg-white"
-                        size="sm">
-                        Subscribe
-                    </Button>
-                </div>
+                <div className="relative w-full max-w-md"> {/* Parent wrapper acts as the anchor point */}
+    <Input
+        type="email"
+        className="w-full pr-24 border-zinc-800 bg-zinc-900/50 text-white placeholder:text-zinc-500 focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-amber-500 focus-visible:ring-offset-0"
+        placeholder="Enter your email address"
+    />
+    <Button
+        variant="secondary"
+        className="cursor-pointer absolute right-1 top-1/2 h-8 -translate-y-1/2 bg-white font-semibold text-zinc-950 hover:bg-amber-500 active:bg-amber-400"
+        size="sm"
+    >
+        Subscribe
+    </Button>
+</div>
                 <Image
-                    src="/choco-bg.jpg"
+                    src="/bg-shoe.jpg"
                     alt="Hero Chololate"
                     fill
                     className="-z-10 rounded-3xl object-cover"

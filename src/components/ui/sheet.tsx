@@ -67,6 +67,17 @@ function SheetContent({
         )}
         {...props}
       >
+        {/* 
+          CRITICAL FIX: Hidden fallback title and description for screen-reader accessibility.
+          This permanently prevents Radix UI from crashing or throwing console errors.
+        */}
+        <div className="sr-only">
+          <SheetPrimitive.Title>Navigation Sidebar</SheetPrimitive.Title>
+          <SheetPrimitive.Description>
+            Mobile application layout navigation sidebar menu drawer.
+          </SheetPrimitive.Description>
+        </div>
+
         {children}
         {showCloseButton && (
           <SheetPrimitive.Close data-slot="sheet-close" asChild>
@@ -75,8 +86,7 @@ function SheetContent({
               className="absolute top-3 right-3"
               size="icon-sm"
             >
-              <XIcon
-              />
+              <XIcon />
               <span className="sr-only">Close</span>
             </Button>
           </SheetPrimitive.Close>

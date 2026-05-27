@@ -7,8 +7,11 @@ export default withAuth({
             
             if(req.nextUrl.pathname.startsWith("/admin")) {   // this check url starting with /admin
                 return token?.role === 'admin';               // if true it give access to /admin page
-            } else {                                          // else says go to all other page except /admin
-                return true 
+            } else if(req.nextUrl.pathname.startsWith("/account")){
+                return token?.role === 'customer';              
+            }       
+            else {                                          // else says go to all other page except /admin
+                return false;
             }
         }
      }
@@ -16,5 +19,6 @@ export default withAuth({
 
 
 export const config = {
-    matcher: ["/admin(/.*)?"],
+    matcher: ["/admin(/.*)?", "/account(/.*)?"],
+
 }
