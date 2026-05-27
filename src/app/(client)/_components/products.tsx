@@ -13,7 +13,7 @@ const Products = () => {
     const skeletons = Array.from({ length: 4 });
     
     // Explicitly cast useQuery to expect an array of Products
-    const { data: products, isLoading } = useQuery<Product[]>({
+    const { data: products = [], isLoading } = useQuery<Product[]>({
         queryKey: ['products'],
         queryFn: getAllProducts,
         staleTime: 10 * 1000,
