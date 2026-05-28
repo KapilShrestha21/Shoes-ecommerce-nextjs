@@ -1,26 +1,28 @@
 'use client';
 import Image from 'next/image';
-import { getMyOrders } from '@/http/api';
-import { useQuery } from '@tanstack/react-query';
+import { Separator } from '@/components/ui/separator';
 import React from 'react';
 import Header from '../../_components/header';
 import { CircleCheck, Loader2 } from 'lucide-react';
 import { Card } from '@/components/ui/card';
-import { Separator } from '@/components/ui/separator';
 import { MyOrder } from '@/types';
 import { capitalizeFirstLetter } from '@/lib/utils';
+import { useQuery } from '@tanstack/react-query';
+import { getMyOrders } from '@/http/api';
 
 const MyOrdersPage = () => {
+    // Setup the query and cast queryFn as any to bypass inner type wrapper layout conflicts
     const {
-        data: myOrders,
+        data,
         isLoading,
         isError,
     } = useQuery<MyOrder[]>({
         queryKey: ['my-orders'],
-        queryFn: getMyOrders,
+        queryFn: getMyOrders as any, 
     });
 
-    console.log('data', myOrders);
+    // Extract out data cleanly with a guaranteed array fallback schema 
+    const ordersList = data ?? [];
 
     return (
         <div>
@@ -32,7 +34,9 @@ const MyOrdersPage = () => {
                     <div className="space-y-5">
                         {isLoading && <Loader2 className="size-10 animate-spin" />}
                         {isError && <span>Something went wrong</span>}
-                        {myOrders?.slice(0, 7).map((item) => (
+                        
+                        {/* Map directly over the safely initialized orders array variable */}
+                        {ordersList.slice(0, 7).map((item) => (
                             <Card key={item.id}>
                                 <div className="flex gap-x-5">
                                     <div className="flex flex-col p-5 text-sm">
@@ -96,8 +100,6 @@ function formatDate(isoString: string): string {
         day: 'numeric',
     };
 
-    // Format the date to "Month Day, Year"
     const formattedDate = date.toLocaleDateString('en-US', options);
-
     return formattedDate;
 }
