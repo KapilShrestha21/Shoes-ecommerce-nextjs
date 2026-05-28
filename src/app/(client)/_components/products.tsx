@@ -12,11 +12,13 @@ import { Skeleton } from '@/components/ui/skeleton';
 const Products = () => {
     const skeletons = Array.from({ length: 4 });
 
-    const { data: products = [] as any, isLoading } = useQuery({
+    const { data, isLoading } = useQuery<Product[]>({
         queryKey: ['products'],
         queryFn: getAllProducts,
         staleTime: 10 * 1000,
     });
+
+    const products = data ?? [];
 
     return (
         <section className="bg-[#f5f5f5] px-5 py-14 md:py-20">
@@ -41,7 +43,7 @@ const Products = () => {
                         </>
                     ) : (
                         <>
-                            {(products as any[])?.map((product: Product) => {
+                            {products.map((product: Product) => {
                                 return (
                                     <div
                                         key={product.id}
