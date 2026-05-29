@@ -89,15 +89,28 @@ export async function POST(request: Request) {
 export async function GET() {
 
     try {
+
+        console.log("DATABASE_URL EXISTS:", !!process.env.DATABASE_URL);
+
         const allProducts = await db
             .select()
             .from(products)
             .orderBy(desc(products.id));
 
-        return Response.json(allProducts)
-    } catch (error) {
-        return Response.json({ message: 'Failed to fetch products' }, { status: 500 })
+        return Response.json(allProducts);
 
+    } catch (error) {
+
+        console.error("FULL ERROR:", error);
+
+        return Response.json(
+            {
+                message: "Failed to fetch products",
+                error: String(error),
+            },
+            {
+                status: 500,
+            }
+        );
     }
 }
-
