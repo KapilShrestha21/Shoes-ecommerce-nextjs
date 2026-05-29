@@ -7,7 +7,7 @@ if (!queryString) {
     throw new Error("DATABASE_URL environment variable is missing!");
 }
 
-let connection: postgres.Sql;
+export let connection: postgres.Sql;
 
 if (process.env.NODE_ENV === "production") {
     // CRITICAL FOR SUPABASE: prepare: false turns off prepared statements, 
