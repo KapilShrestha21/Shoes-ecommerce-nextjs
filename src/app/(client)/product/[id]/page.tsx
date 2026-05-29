@@ -20,7 +20,7 @@ import { Input } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
 import { useSession } from 'next-auth/react';
 import Link from 'next/link';
-import { AxiosError } from 'axios';
+import type { AxiosError } from 'axios';
 import { toast } from 'sonner';
 
 
