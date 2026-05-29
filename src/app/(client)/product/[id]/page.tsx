@@ -20,7 +20,6 @@ import { Input } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
 import { useSession } from 'next-auth/react';
 import Link from 'next/link';
-import type { AxiosError } from 'axios';
 import { toast } from 'sonner';
 
 
@@ -80,7 +79,7 @@ const SingleProduct = () => {
             });
             // window.location.href = data.paymentUrl;
         },
-        onError: (err: AxiosError) => {
+        onError: (err: any) => {
             if (err.response?.data) {
                 const customErr = err.response.data as CustomError;
                 console.error(customErr.message);
