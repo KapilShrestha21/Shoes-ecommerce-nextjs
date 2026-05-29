@@ -58,7 +58,7 @@ const SingleProduct = () => {
 
     const { data: product, isLoading } = useQuery<Product>({
         queryKey: ['product', id],
-        queryFn: () => getSingleProduct(id as string),
+        queryFn: (() => getSingleProduct(id as string)) as any,
 
         // Don't run the fetch if id doesn't exist yet
         enabled: !!id && id !== 'undefined',
