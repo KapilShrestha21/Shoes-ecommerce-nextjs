@@ -40,16 +40,16 @@ const navItems = [
 const DashboardLayout = async ({ children }: { children: React.ReactNode }) => {
     const session = await getServerSession(authOptions);
     console.log('Server session', session);
-    
+
     return (
         <div className="grid min-h-screen w-full bg-zinc-50 text-zinc-900 md:grid-cols-[220px_1fr] lg:grid-cols-[260px_1fr]">
             {/* Desktop Left-Hand Sidebar Panel */}
             <Sidebar />
-            
+
             <div className="flex flex-col">
                 {/* Global Dashboard Sticky Header */}
                 <header className="sticky top-0 z-40 flex h-14 items-center gap-4 border-b border-zinc-200 bg-white/80 px-4 backdrop-blur-md lg:h-[60px] lg:px-6 shadow-sm">
-                    
+
                     {/* Mobile Navigation Sheet Trigger Container */}
                     <Sheet>
                         <SheetTrigger asChild>
@@ -63,7 +63,7 @@ const DashboardLayout = async ({ children }: { children: React.ReactNode }) => {
                                 <Package2 className="h-6 w-6 text-amber-500" />
                                 <span className="font-bold text-lg tracking-tight text-zinc-900">Store Admin</span>
                             </div>
-                            
+
                             {/* Dynamically mapped navigation resolving your mobile screens todo item */}
                             <nav className="mt-6 grid gap-1.5 text-base font-medium">
                                 {navItems.map((item) => {
@@ -108,8 +108,10 @@ const DashboardLayout = async ({ children }: { children: React.ReactNode }) => {
                             <DropdownMenuSeparator className="bg-zinc-100" />
                             {session && (
                                 <DropdownMenuItem className="p-0 focus:bg-red-50">
-                                    <Signout className="w-full text-left px-2 py-1.5 text-red-600 hover:text-red-700 font-medium">
-                                        Logout
+                                    <Signout>
+                                        <div className="w-full text-left px-2 py-1.5 text-red-600 hover:text-red-700 font-medium">
+                                            Logout
+                                        </div>
                                     </Signout>
                                 </DropdownMenuItem>
                             )}
