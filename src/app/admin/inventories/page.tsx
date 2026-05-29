@@ -16,7 +16,7 @@ const InventoriesPage = () => {
 
     const {data: inventories, isLoading, isError} = useQuery<Inventory[]>({
         queryKey: ['inventories'],
-        queryFn: getAllInventories,
+        queryFn: getAllInventories as any,
     })
 
   return (

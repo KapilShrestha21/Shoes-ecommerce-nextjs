@@ -18,7 +18,7 @@ const ProductsPage = () => {
   const { onOpen } = useNewProduct()
   const { data: products, isLoading, isError  } = useQuery<Product[]>({
     queryKey: ["products"], // products is first time define here
-    queryFn: getAllProducts,
+    queryFn: getAllProducts as any, // getAllProducts is define in api.ts file and used here to fetch data from backend 
   })
 
   return (

@@ -16,7 +16,7 @@ const DeliveryPersonPage = () => {
 
     const {data: deliveryPerson, isLoading, isError} = useQuery<DeliveryPerson[]>({
         queryKey: ['delivery-persons'],
-        queryFn: getAllDeliveryPersons
+        queryFn: getAllDeliveryPersons as any,
     })
 
   return (

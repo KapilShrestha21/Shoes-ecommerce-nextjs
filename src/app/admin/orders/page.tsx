@@ -14,7 +14,7 @@ const OrdersPage = () => {
         isLoading,
     } = useQuery({
         queryKey: ['orders'],
-        queryFn: getAllOrders,
+        queryFn: getAllOrders as any,
     });
 
     return (

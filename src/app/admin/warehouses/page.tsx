@@ -20,7 +20,7 @@ const WarehousesPage = () => {
         isError
     } = useQuery<Warehouse[]>({
         queryKey: ['warehouses'],
-        queryFn: getAllWarehouses
+        queryFn: getAllWarehouses as any,
     })
     return (
         <>
