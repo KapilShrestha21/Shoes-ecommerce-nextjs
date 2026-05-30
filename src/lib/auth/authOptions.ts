@@ -51,13 +51,14 @@ export const authOptions: AuthOptions = {
 
                 } catch (err) {
                     console.log(err);
-                    return {
-                        id: profile.sub,
-                        name: profile.name || "",
-                        email: profile.email,
-                        image: profile.picture || "",
-                        role: 'customer',
-                    }
+                }
+
+                return {
+                    id: profile.sub,
+                    name: profile.name || "",
+                    email: profile.email,
+                    image: profile.picture || "",
+                    role: 'customer',
                 }
             }
         })
@@ -67,7 +68,7 @@ export const authOptions: AuthOptions = {
         async session({ session, token }: { session: any; token: any }) {
             if (session.user) {
                 session.user.role = token.role,
-                    session.user.id = token.id;
+                session.user.id = token.id;
             }
 
             return session;
