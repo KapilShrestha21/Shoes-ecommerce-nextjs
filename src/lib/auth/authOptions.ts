@@ -59,14 +59,16 @@ export const authOptions: AuthOptions = {
     ],
     callbacks: {
         async jwt({ token, user }: { token: any; user: any }) {
-            // 1. Initial sign-in
+            // Initial sign-in
             if (user) {
                 token.role = user.role;
                 token.id = user.id;
             }
-            // 2. Subsequent visits: Fetch freshest role straight from Supabase
+            // Subsequent visits: Fetch freshest role straight from Supabase
             else if (token.email) {
                 try {
+                    console.log("PRODUCTION CHECK: Attempting to fetch user for email:", token.email);
+
                     const dbUser = await db
                         .select({ id: users.id, role: users.role })
                         .from(users)
@@ -74,11 +76,15 @@ export const authOptions: AuthOptions = {
                         .limit(1);
 
                     if (dbUser && dbUser[0]) {
+                        console.log("PRODUCTION CHECK: Found user role:", dbUser[0].role);
                         token.id = String(dbUser[0].id);
-                        token.role = dbUser[0].role; //  Syncs the admin change instantly!
+                        token.role = dbUser[0].role;
+                    } else {
+                        console.log("PRODUCTION CHECK: No user found in DB for this email.");
                     }
                 } catch (error) {
-                    console.error("Error fetching user role on token check:", error);
+                    // This log will reveal exactly why Supabase is blocking Vercel
+                    console.error("PRODUCTION CRITICAL DATABASE ERROR:", error);
                 }
             }
 
