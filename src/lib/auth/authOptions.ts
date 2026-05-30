@@ -2,6 +2,7 @@ import GoogleProvider from 'next-auth/providers/google'
 import { db } from '../db/db';
 import { users } from '../db/schema';
 import { AuthOptions } from 'next-auth';
+import { eq } from 'drizzle-orm';
 
 export const authOptions: AuthOptions = {
     providers: [
@@ -56,28 +57,41 @@ export const authOptions: AuthOptions = {
             }
         })
     ],
-
     callbacks: {
-        async session({ session, token }: { session: any; token: any }) {
-            console.log("SESSION:", session);
-            console.log("TOKEN:", token);
-
-            if (session.user) {
-                session.user.role = token.role,
-                    session.user.id = token.id;
-            }
-
-            return session;
-        },
-
         async jwt({ token, user }: { token: any; user: any }) {
+            // 1. Initial sign-in
             if (user) {
                 token.role = user.role;
                 token.id = user.id;
             }
+            // 2. Subsequent visits: Fetch freshest role straight from Supabase
+            else if (token.email) {
+                try {
+                    const dbUser = await db
+                        .select({ id: users.id, role: users.role })
+                        .from(users)
+                        .where(eq(users.email, token.email))
+                        .limit(1);
+
+                    if (dbUser && dbUser[0]) {
+                        token.id = String(dbUser[0].id);
+                        token.role = dbUser[0].role; //  Syncs the admin change instantly!
+                    }
+                } catch (error) {
+                    console.error("Error fetching user role on token check:", error);
+                }
+            }
 
             return token;
-        }
+        },
+
+        async session({ session, token }: { session: any; token: any }) {
+            if (session.user) {
+                session.user.role = token.role;
+                session.user.id = token.id;
+            }
+            return session;
+        },
     }
 }
 
