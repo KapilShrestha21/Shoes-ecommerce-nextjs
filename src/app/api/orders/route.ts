@@ -61,7 +61,7 @@ export async function POST(request: Request) {
                 .values({
                     ...validateData,
                     // @ts-ignore
-                    userId: session.token.id,
+                    userId: parseInt(session.user.id),
                     price: foundProducts[0].price * validateData.qty,
                     // todo: move all status to enum or const
                     status: 'received'
@@ -135,6 +135,7 @@ export async function POST(request: Request) {
     } catch (err) {
 
         // If it's an intentional rollback we caught, let the block below catch and return a 400
+        console.error("Transaction error:", err);
         if (transactionError) {
             return Response.json({ message: transactionError }, { status: 400 }); // 🟢 Return 400 instead of 500
         }

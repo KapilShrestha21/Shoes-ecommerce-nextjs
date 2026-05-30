@@ -8,7 +8,7 @@ export default withAuth({
             if(req.nextUrl.pathname.startsWith("/admin")) {   // this check url starting with /admin
                 return token?.role === 'admin';               // if true it give access to /admin page
             } else if(req.nextUrl.pathname.startsWith("/account")){
-                return token?.role === 'customer';              
+                return token?.role === 'customer' || token?.role === 'admin';              
             }       
             else {                                          // else says go to all other page except /admin
                 return false;
