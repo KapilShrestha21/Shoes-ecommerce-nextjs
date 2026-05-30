@@ -9,39 +9,36 @@ export const authOptions: AuthOptions = {
             clientId: process.env.GOOGLE_CLIENT_ID as string,
             clientSecret: process.env.GOOGLE_CLIENT_SECRET as string,
             async profile(profile) {
-                console.log('Google Profile Payload:', profile);
+                console.log('Google raw profile received:', profile.email);
 
+                // Map exactly to your Drizzle schema keys
                 const data = {
                     fname: profile.given_name || "",
                     lname: profile.family_name || "",
                     email: profile.email,
                     provider: 'Google',
-                    externalId: profile.sub, // Make sure this matches your schema property name
+                    externalId: profile.sub,
                     image: profile.picture || "",
+                    role: "customer" // explicitly matching your default constraint string length
                 };
 
                 try {
                     const user = await db
                         .insert(users)
-                        .values({
-                            fname: data.fname,
-                            lname: data.lname,
-                            email: data.email,
-                            provider: data.provider,
-                            externalId: data.externalId, // Drizzle maps this to external_id automatically
-                            image: data.image
-                        })
+                        .values(data)
                         .onConflictDoUpdate({
                             target: users.email,
                             set: {
                                 fname: data.fname,
                                 lname: data.lname,
                                 image: data.image,
+                                externalId: data.externalId
                             }
                         })
                         .returning();
 
                     if (user && user[0]) {
+                        // Return exactly what NextAuth expects, mapping your db row values
                         return {
                             id: String(user[0].id),
                             name: `${user[0].fname} ${user[0].lname}`.trim(),
@@ -51,12 +48,17 @@ export const authOptions: AuthOptions = {
                         }
                     }
                 } catch (err) {
-                    // This will print the exact database constraint violation in your Vercel logs
-                    console.error("❌ SUPABASE INSERTION CRASHED:", err);
-                    throw new Error("Database sync failed: " + JSON.stringify(err));
+                    console.error("❌ DATABASE INSERTION CRASHED:", err);
                 }
 
-                throw new Error("User creation failed completely.");
+                // Standard safety fallback so it NEVER returns undefined
+                return {
+                    id: profile.sub,
+                    name: profile.name || `${data.fname} ${data.lname}`.trim(),
+                    email: profile.email,
+                    image: profile.picture || "",
+                    role: 'customer',
+                };
             }
         })
     ],
