@@ -8,7 +8,7 @@ export const authOptions: AuthOptions = {
         GoogleProvider({
             clientId: process.env.GOOGLE_CLIENT_ID as string,
             clientSecret: process.env.GOOGLE_CLIENT_SECRET as string,
-            async profile(profile) {
+            async profile(profile, token: any) {
                 console.log('Google raw profile received:', profile.email);
 
                 // Map exactly to your Drizzle schema keys
@@ -19,7 +19,6 @@ export const authOptions: AuthOptions = {
                     provider: 'Google',
                     externalId: profile.sub,
                     image: profile.picture || "",
-                    role: "customer" // explicitly matching your default constraint string length
                 };
 
                 try {
@@ -32,39 +31,37 @@ export const authOptions: AuthOptions = {
                                 fname: data.fname,
                                 lname: data.lname,
                                 image: data.image,
-                                externalId: data.externalId
-                            }
+                                externalId: data.externalId,
+                            },
                         })
                         .returning();
 
-                    if (user && user[0]) {
-                        // Return exactly what NextAuth expects, mapping your db row values
-                        return {
-                            id: String(user[0].id),
-                            name: `${user[0].fname} ${user[0].lname}`.trim(),
-                            email: user[0].email,
-                            image: user[0].image,
-                            role: user[0].role,
-                        }
+                    if (!user[0]) {
+                        throw new Error("User creation failed");
                     }
-                } catch (err) {
-                    console.error("❌ DATABASE INSERTION CRASHED:", err);
-                }
 
-                // Standard safety fallback so it NEVER returns undefined
-                return {
-                    id: profile.sub,
-                    name: profile.name || `${data.fname} ${data.lname}`.trim(),
-                    email: profile.email,
-                    image: profile.picture || "",
-                    role: 'customer',
-                };
+                    return {
+                        id: String(user[0].id),
+                        name: `${user[0].fname} ${user[0].lname}`.trim(),
+                        email: user[0].email,
+                        image: user[0].image,
+                        role: user[0].role,
+                    };
+
+                } catch (err) {
+                    console.error("DATABASE INSERTION CRASHED:", err);
+
+                    throw err;
+                }
             }
         })
     ],
 
     callbacks: {
         async session({ session, token }: { session: any; token: any }) {
+            console.log("SESSION:", session);
+            console.log("TOKEN:", token);
+
             if (session.user) {
                 session.user.role = token.role,
                     session.user.id = token.id;
