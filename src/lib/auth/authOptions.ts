@@ -8,58 +8,55 @@ export const authOptions: AuthOptions = {
         GoogleProvider({
             clientId: process.env.GOOGLE_CLIENT_ID as string,
             clientSecret: process.env.GOOGLE_CLIENT_SECRET as string,
-            async profile(profile, token: any) {
-                console.log('profile', profile);
-                console.log('tokens', token);
+            async profile(profile) {
+                console.log('Google Profile Payload:', profile);
 
-                // to extract data form profile which is from google provider and then store in database
                 const data = {
                     fname: profile.given_name || "",
                     lname: profile.family_name || "",
                     email: profile.email,
                     provider: 'Google',
-                    externalId: profile.sub,
+                    externalId: profile.sub, // Make sure this matches your schema property name
                     image: profile.picture || "",
                 };
 
-                // storing in database
                 try {
                     const user = await db
                         .insert(users)
-                        .values(data)
+                        .values({
+                            fname: data.fname,
+                            lname: data.lname,
+                            email: data.email,
+                            provider: data.provider,
+                            externalId: data.externalId, // Drizzle maps this to external_id automatically
+                            image: data.image
+                        })
                         .onConflictDoUpdate({
                             target: users.email,
                             set: {
                                 fname: data.fname,
                                 lname: data.lname,
                                 image: data.image,
-                                externalId: data.externalId
                             }
-                        }) // email could be repeat so target it and set data again to update
+                        })
                         .returning();
 
-                    // returning the data to use to store it in cookies/ token  
                     if (user && user[0]) {
-
                         return {
-                            ...data,
-                            name: data.fname,
                             id: String(user[0].id),
+                            name: `${user[0].fname} ${user[0].lname}`.trim(),
+                            email: user[0].email,
+                            image: user[0].image,
                             role: user[0].role,
                         }
                     }
-
                 } catch (err) {
-                    console.log(err);
+                    // This will print the exact database constraint violation in your Vercel logs
+                    console.error("❌ SUPABASE INSERTION CRASHED:", err);
+                    throw new Error("Database sync failed: " + JSON.stringify(err));
                 }
 
-                return {
-                    id: profile.sub,
-                    name: profile.name || "",
-                    email: profile.email,
-                    image: profile.picture || "",
-                    role: 'customer',
-                }
+                throw new Error("User creation failed completely.");
             }
         })
     ],
@@ -68,7 +65,7 @@ export const authOptions: AuthOptions = {
         async session({ session, token }: { session: any; token: any }) {
             if (session.user) {
                 session.user.role = token.role,
-                session.user.id = token.id;
+                    session.user.id = token.id;
             }
 
             return session;
